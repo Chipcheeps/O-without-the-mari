@@ -1,0 +1,66 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!78 &1
+TagManager:
+  serializedVersion: 2
+  tags:
+  - Collectable
+  - Finish!
+  - Projectiles
+  - Stun Projectiles
+  - Weapons
+  - Enemy
+  - Surface
+  - Stage Hazard
+  layers:
+  - Default
+  - TransparentFX
+  - Ignore Raycast
+  - 
+  - Water
+  - UI
+  - 
+  - Player
+  - Ground
+  - Collectables
+  - Drone
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  - 
+  m_SortingLayers:
+  - name: Default
+    uniqueID: 0
+    locked: 0
+  - name: Level
+    uniqueID: 1588222477
+    locked: 0
+  - name: Stage Hazard
+    uniqueID: 4014742021
+    locked: 0
+  - name: Entity
+    uniqueID: 2456803777
+    locked: 0
+  - name: Collectables
+    uniqueID: 4214057889
+    locked: 0
+  - name: UI
+    uniqueID: 808680123
+    locked: 0
