@@ -48,44 +48,8 @@ public class DroneScript : MonoBehaviour
             var degree = 0;
             for(int i = 1; i <= 16; i++)
             {
-                hit = Physics2D.BoxCast(col2d.bounds.center, col2d.bounds.size * 20f, Mathf.Sin(degree * Mathf.Deg2Rad), Vector2.right, 20f, PlayerLayer);
-                //if (DroneDebug)
-                //{
-                //    Vector2 p1, p2, p3, p4, p5, p6, p7, p8;
-                //    float w = col2d.bounds.size.x * 0.5f;
-                //    float h = col2d.bounds.size.y * 0.5f;
-                //    p1 = new Vector2(-w, h);
-                //    p2 = new Vector2(w, h);
-                //    p3 = new Vector2(w, -h);
-                //    p4 = new Vector2(-w, -h);
-                //    Quaternion q = Quaternion.AngleAxis(Mathf.Sin(degree * Mathf.Deg2Rad), new Vector3(0, 0, 1));
-                //    p1 = q * p1;
-                //    p2 = q * p2;
-                //    p3 = q * p3;
-                //    p4 = q * p4;
-                //    p1 += (Vector2)col2d.bounds.center;
-                //    p2 += (Vector2)col2d.bounds.center;
-                //    p3 += (Vector2)col2d.bounds.center;
-                //    p4 += (Vector2)col2d.bounds.center;
-                //    Vector2 realdistance = Vector2.right * 20f;
-                //    p5 = p1 + realdistance;
-                //    p6 = p2 + realdistance; 
-                //    p7 = p3 + realdistance;
-                //    p8 = p4 + realdistance;
-                //    Color castcolor = hit ? Color.green : Color.red;
-                //    Debug.DrawLine(p1, p2, castcolor);
-                //    Debug.DrawLine(p2, p3, castcolor);
-                //    Debug.DrawLine(p3, p4, castcolor);
-                //    Debug.DrawLine(p4, p1, castcolor);
-                //    Debug.DrawLine(p5, p6, castcolor);
-                //    Debug.DrawLine(p6, p7, castcolor);
-                //    Debug.DrawLine(p7, p8, castcolor);
-                //    Debug.DrawLine(p8, p5, castcolor);
-                //    Debug.DrawLine(p1, p5, castcolor);
-                //    Debug.DrawLine(p2, p6, castcolor);
-                //    Debug.DrawLine(p3, p7, castcolor);
-                //    Debug.DrawLine(p4, p8, castcolor);
-                //}
+                hit = Physics2D.BoxCast(col2d.bounds.center, col2d.bounds.size * 20f, Mathf.Sin(degree * Mathf.Deg2Rad), Vector2.right, 10f, PlayerLayer);
+
                 if (hit.collider != null)
                 {
                     Debug.Log("Raycast");
@@ -93,6 +57,12 @@ public class DroneScript : MonoBehaviour
                     if (lookfordrone.Length > 0)
                     {
                         Debug.Log("lookfordrone");
+                        transform.position = Vector2.MoveTowards(transform.position, hit.transform.position, -10f * Time.deltaTime); 
+                    }
+                    Collider2D[] dronestayhere = Physics2D.OverlapCircleAll(hit.transform.position, 11f, DroneLayer);
+                    if (dronestayhere.Length <= 0)
+                    {
+                        transform.position = Vector2.MoveTowards(transform.position, hit.transform.position, 5f * Time.deltaTime);
                     }
                 }
                 
@@ -107,7 +77,6 @@ public class DroneScript : MonoBehaviour
                     degree += 15;
                 }
             }
-           
         }
     }
 
