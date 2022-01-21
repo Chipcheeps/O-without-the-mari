@@ -13,6 +13,7 @@ public class DroneScript : MonoBehaviour
     Rigidbody2D rb2d;
     BoxCollider2D col2d;
     RaycastHit2D hit;
+    RaycastHit2D hitplayer;
     public bool DroneDebug;
     // Start is called before the first frame update
     void Start()
@@ -25,9 +26,9 @@ public class DroneScript : MonoBehaviour
     }
     void OnDrawGizmosSelected()
     {
-        if (hit.collider != null)
+        if (hitplayer.collider != null)
         {
-          Gizmos.DrawWireSphere(hit.transform.position, 10f);
+          Gizmos.DrawWireSphere(hitplayer.transform.position, 10f);
         }
         
     }
@@ -48,21 +49,25 @@ public class DroneScript : MonoBehaviour
             var degree = 0;
             for(int i = 1; i <= 16; i++)
             {
-                hit = Physics2D.BoxCast(col2d.bounds.center, col2d.bounds.size * 20f, Mathf.Sin(degree * Mathf.Deg2Rad), Vector2.right, 10f, PlayerLayer);
-
+                hitplayer = Physics2D.BoxCast(col2d.bounds.center, col2d.bounds.size * 20f, Mathf.Sin(degree * Mathf.Deg2Rad), Vector2.right, 10f, PlayerLayer);
+                hit = Physics2D.BoxCast(col2d.bounds.center, col2d.bounds.size * 20f, Mathf.Sin(degree * Mathf.Deg2Rad), Vector2.right, 10f);
                 if (hit.collider != null)
                 {
+                    transform.position = Vector2.MoveTowards(transform.position, hit.transform.position, -20f * Time.deltaTime);
+                }
+                if (hitplayer.collider != null)
+                {
                     Debug.Log("Raycast");
-                    Collider2D[] lookfordrone = Physics2D.OverlapCircleAll(hit.transform.position, 10f, DroneLayer);
+                    Collider2D[] lookfordrone = Physics2D.OverlapCircleAll(hitplayer.transform.position, 10f, DroneLayer);
                     if (lookfordrone.Length > 0)
                     {
                         Debug.Log("lookfordrone");
-                        transform.position = Vector2.MoveTowards(transform.position, hit.transform.position, -10f * Time.deltaTime); 
+                        transform.position = Vector2.MoveTowards(transform.position, hitplayer.transform.position, -10f * Time.deltaTime); 
                     }
-                    Collider2D[] dronestayhere = Physics2D.OverlapCircleAll(hit.transform.position, 11f, DroneLayer);
+                    Collider2D[] dronestayhere = Physics2D.OverlapCircleAll(hitplayer.transform.position, 11f, DroneLayer);
                     if (dronestayhere.Length <= 0)
                     {
-                        transform.position = Vector2.MoveTowards(transform.position, hit.transform.position, 5f * Time.deltaTime);
+                        transform.position = Vector2.MoveTowards(transform.position, hitplayer.transform.position, 5f * Time.deltaTime);
                     }
                 }
                 
