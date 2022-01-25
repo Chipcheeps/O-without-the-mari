@@ -1018,7 +1018,7 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 245160466}
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
-  m_LocalPosition: {x: 47.49, y: 4.75, z: 0}
+  m_LocalPosition: {x: 47.49, y: 4.76, z: 0}
   m_LocalScale: {x: 2.6911, y: 2.6911, z: 2.6911}
   m_Children:
   - {fileID: 1084060238}
@@ -1072,6 +1072,12 @@ MonoBehaviour:
   DroneLayer:
     serializedVersion: 2
     m_Bits: 1024
+  GroundLayer:
+    serializedVersion: 2
+    m_Bits: 256
+  WallLayer:
+    serializedVersion: 2
+    m_Bits: 512
   DroneDebug: 1
 --- !u!50 &245160471
 Rigidbody2D:
@@ -3354,7 +3360,7 @@ GameObject:
   - component: {fileID: 579997569}
   - component: {fileID: 579997568}
   - component: {fileID: 579997567}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Wall
   m_TagString: Surface
   m_Icon: {fileID: 0}
@@ -8237,7 +8243,7 @@ GameObject:
   - component: {fileID: 1728473074}
   - component: {fileID: 1728473073}
   - component: {fileID: 1728473072}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Door
   m_TagString: Surface
   m_Icon: {fileID: 0}
@@ -9769,7 +9775,7 @@ GameObject:
   - component: {fileID: 2073387133}
   - component: {fileID: 2073387132}
   - component: {fileID: 2073387131}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: ' Wall2'
   m_TagString: Surface
   m_Icon: {fileID: 0}
@@ -10109,7 +10115,7 @@ GameObject:
   - component: {fileID: 2119639436}
   - component: {fileID: 2119639435}
   - component: {fileID: 2119639434}
-  m_Layer: 8
+  m_Layer: 9
   m_Name: Wall (1)
   m_TagString: Surface
   m_Icon: {fileID: 0}

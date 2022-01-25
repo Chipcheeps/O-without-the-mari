@@ -10,11 +10,14 @@ public class DroneScript : MonoBehaviour
     public bool IsInDroneRange;
     public LayerMask PlayerLayer;
     public LayerMask DroneLayer;
+    public LayerMask GroundLayer;
+    public LayerMask WallLayer;
     Rigidbody2D rb2d;
     BoxCollider2D col2d;
-    RaycastHit2D hit;
+    RaycastHit2D hitground;
     RaycastHit2D hitplayer;
     public bool DroneDebug;
+    Vector2 velocity = Vector2.zero;
     // Start is called before the first frame update
     void Start()
     {
@@ -47,14 +50,14 @@ public class DroneScript : MonoBehaviour
         {
             Debug.Log("in range");
             var degree = 0;
+                hitground = Physics2D.BoxCast(col2d.bounds.center, col2d.bounds.size * 20f, 0f, Vector2.down, 5f, GroundLayer);
+                if (hitground.collider != null)
+                {
+                    rb2d.AddForce(Vector2.up * 0.5f, ForceMode2D.Impulse);
+                }
             for(int i = 1; i <= 16; i++)
             {
-                hitplayer = Physics2D.BoxCast(col2d.bounds.center, col2d.bounds.size * 20f, Mathf.Sin(degree * Mathf.Deg2Rad), Vector2.right, 10f, PlayerLayer);
-                hit = Physics2D.BoxCast(col2d.bounds.center, col2d.bounds.size * 20f, Mathf.Sin(degree * Mathf.Deg2Rad), Vector2.right, 10f);
-                if (hit.collider != null)
-                {
-                    transform.position = Vector2.MoveTowards(transform.position, hit.transform.position, -20f * Time.deltaTime);
-                }
+                hitplayer = Physics2D.BoxCast(col2d.bounds.center, col2d.bounds.size * 20f, Mathf.Sin(degree * Mathf.Deg2Rad), Vector2.right, 15f, PlayerLayer);
                 if (hitplayer.collider != null)
                 {
                     Debug.Log("Raycast");
@@ -67,7 +70,7 @@ public class DroneScript : MonoBehaviour
                     Collider2D[] dronestayhere = Physics2D.OverlapCircleAll(hitplayer.transform.position, 11f, DroneLayer);
                     if (dronestayhere.Length <= 0)
                     {
-                        transform.position = Vector2.MoveTowards(transform.position, hitplayer.transform.position, 5f * Time.deltaTime);
+                        transform.position = Vector2.SmoothDamp(transform.position, hitplayer.transform.position,ref velocity, 10f);
                     }
                 }
                 
