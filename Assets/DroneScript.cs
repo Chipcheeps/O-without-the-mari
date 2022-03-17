@@ -15,9 +15,16 @@ public class DroneScript : MonoBehaviour
     Rigidbody2D rb2d;
     BoxCollider2D col2d;
     RaycastHit2D hitground;
+    RaycastHit2D hitwallLeft;
+    RaycastHit2D hitwallRight;
     RaycastHit2D hitplayer;
-    public bool DroneDebug;
     Vector2 velocity = Vector2.zero;
+    public float Timer;
+    Vector2 Target;
+    public GameObject DetectionZone1;
+    Vector3 followedpoint;
+    public bool ifhitwall;
+    public bool inzone;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,57 +33,84 @@ public class DroneScript : MonoBehaviour
         IsInDroneRange = false;
         rb2d = GetComponent<Rigidbody2D>();
         col2d = GetComponent<BoxCollider2D>();
+        Timer = 0;
+        inzone = false;
     }
+   
+   
     void OnDrawGizmosSelected()
     {
         if (hitplayer.collider != null)
         {
-          Gizmos.DrawWireSphere(hitplayer.transform.position, 10f);
+          Gizmos.DrawWireSphere(hitplayer.transform.position, 5f);
+          Gizmos.DrawWireSphere(hitplayer.transform.position, 50f);
         }
         
     }
     // Update is called once per frame
     void Update()
     {
-        Collider2D[] hitlist = Physics2D.OverlapCircleAll(gameObject.transform.position, 20f, PlayerLayer);
-        foreach (Collider2D enemy in hitlist)
-        {
-            if (hitlist.Length == 1)
-            {
-                IsInDroneRange = true;
-            }
-        }
         if (IsInDroneRange)
         {
             Debug.Log("in range");
             var degree = 0;
-                hitground = Physics2D.BoxCast(col2d.bounds.center, col2d.bounds.size * 20f, 0f, Vector2.down, 5f, GroundLayer);
-                if (hitground.collider != null)
-                {
-                    rb2d.AddForce(Vector2.up * 0.5f, ForceMode2D.Impulse);
-                }
-            for(int i = 1; i <= 16; i++)
+            hitground = Physics2D.BoxCast(col2d.bounds.center, col2d.bounds.size, 0f, Vector2.down, 5f, GroundLayer);
+            if (hitground.collider != null)
             {
-                hitplayer = Physics2D.BoxCast(col2d.bounds.center, col2d.bounds.size * 20f, Mathf.Sin(degree * Mathf.Deg2Rad), Vector2.right, 15f, PlayerLayer);
+                Debug.Log("Ground Detected");
+                rb2d.AddForce(Vector2.up * 6f * Time.fixedDeltaTime, ForceMode2D.Impulse);
+            }
+            if (Mathf.Abs(rb2d.velocity.x) < 0.5f && !ifhitwall)
+            {
+                if (Target.normalized.x < 0)
+                {
+                    rb2d.velocity += new Vector2(Target.normalized.x - 10f, 0);
+                }
+                else
+                {
+                    rb2d.velocity += new Vector2(Target.normalized.x + 10f, 0);
+                }
+
+            }
+            for (int i = 1; i <= 16; i++)
+            {
+                hitplayer = Physics2D.BoxCast(col2d.bounds.center, col2d.bounds.size * 300f, Mathf.Sin(degree * Mathf.Deg2Rad), Vector2.right, 300f, PlayerLayer);
+                followedpoint = hitplayer.transform.position;
                 if (hitplayer.collider != null)
                 {
                     Debug.Log("Raycast");
-                    Collider2D[] lookfordrone = Physics2D.OverlapCircleAll(hitplayer.transform.position, 10f, DroneLayer);
-                    if (lookfordrone.Length > 0)
+                    Collider2D[] followntplayer = Physics2D.OverlapCircleAll(followedpoint, 5f, DroneLayer);
+                    if (followntplayer.Length > 0)
                     {
                         Debug.Log("lookfordrone");
-                        transform.position = Vector2.MoveTowards(transform.position, hitplayer.transform.position, -10f * Time.deltaTime); 
-                    }
-                    Collider2D[] dronestayhere = Physics2D.OverlapCircleAll(hitplayer.transform.position, 11f, DroneLayer);
-                    if (dronestayhere.Length <= 0)
-                    {
-                        transform.position = Vector2.SmoothDamp(transform.position, hitplayer.transform.position,ref velocity, 10f);
-                    }
-                }
-                
 
-                
-                if (i % 4 == 1 || i % 4 == 0) 
+                        //while (followntplayer.Length > 0)
+                        //{
+                        rb2d.AddForce(Target.normalized * 0.5f * Time.fixedDeltaTime, ForceMode2D.Impulse);
+                        //followntplayer = Physics2D.OverlapCircleAll(hitplayer.transform.position, 10f, DroneLayer);
+                        //if (Timer > Random.Range)
+                        //}                        
+                    }
+                    else
+                    {
+                        Target = transform.position - followedpoint;
+                        Target.x *= -1;
+                    }
+                    Collider2D[] followplayer = Physics2D.OverlapCircleAll(followedpoint, 50f, DroneLayer);
+                    if (followplayer.Length > 0)
+                    {
+                        Debug.Log("followplayer");
+                        Vector2 TowardsPlayer = followedpoint - transform.position;
+                        Vector2 Strafe = new Vector2(Random.Range(-1, 1), 1);
+                        //TowardsPlayer = Vector2.Scale(Strafe, TowardsPlayer);
+                        rb2d.AddForce(TowardsPlayer.normalized * 0.49f * Time.fixedDeltaTime, ForceMode2D.Impulse);
+                    }
+
+                }
+
+
+
+                if (i % 4 == 1 || i % 4 == 0)
                 {
                     degree += 30;
                 }
@@ -85,6 +119,46 @@ public class DroneScript : MonoBehaviour
                     degree += 15;
                 }
             }
+        }
+        if (DetectionZone1.GetComponent<Detection_Zone>().InZone)
+        {
+           
+
+        
+        Collider2D[] hitlist = Physics2D.OverlapCircleAll(gameObject.transform.position, 15f, PlayerLayer);
+        Timer += Time.deltaTime;
+        
+        if (hitlist.Length == 1)
+        {
+            IsInDroneRange = true;
+        }
+        else if (hitlist.Length == 0)
+        {
+            Debug.Log("nothing in range");
+            IsInDroneRange = false;
+        }
+        ifhitwall = false;
+        
+        hitwallLeft = Physics2D.BoxCast(col2d.bounds.center, col2d.bounds.size, 0f, Vector2.left, 0.1f, WallLayer);
+        if (hitwallLeft.collider != null)
+        {
+            Debug.Log("WallLeft Detected");
+            rb2d.velocity += new Vector2(1f, 0);
+            ifhitwall = true;
+        }
+        hitwallRight = Physics2D.BoxCast(col2d.bounds.center, col2d.bounds.size, 0f, Vector2.right, 0.1f, WallLayer);
+        if (hitwallRight.collider != null)
+        {
+            Debug.Log("WallRight Detected");
+            rb2d.velocity += new Vector2(-1f, 0);
+            ifhitwall = true;
+        }
+        if (inzone)
+        {
+            rb2d.AddForce(Vector2.down * 6f * Time.fixedDeltaTime, ForceMode2D.Impulse);
+        }
+        
+        
         }
     }
 
@@ -95,8 +169,23 @@ public class DroneScript : MonoBehaviour
             Health -= 1;
             if (Health <= 0)
             {
-                Destroy(gameObject);
+                gameObject.SetActive(false);
             }
+        }
+        
+    }
+    private void OnTriggerEnter2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Drone Detection Zone"))
+        {
+            inzone = true;
+        }
+    }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Drone Detection Zone"))
+        {
+            inzone = false;
         }
     }
 }
