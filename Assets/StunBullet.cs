@@ -10,6 +10,13 @@ public class StunBullet : MonoBehaviour
     {
     
     }
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+        if (collision.gameObject.CompareTag("Enemy") || collision.gameObject.CompareTag("Stage Hazard"))
+        {
+            gameObject.GetComponent<PolygonCollider2D>().isTrigger = false;
+        }
+    }
 
     private void OnCollisionEnter2D(Collision2D collision)
     {
