@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< HEAD:Assets/Drone_Generator.cs.meta
 guid: feae86a739cb3e84f9151037899a2fc2
+=======
+guid: 7abe5996854e0694a9ea5a6a8192c6cb
+>>>>>>> b45fff3d039ec15adcacc856dd418067be2eeab8:Assets/StunBulletCloningDrone.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
