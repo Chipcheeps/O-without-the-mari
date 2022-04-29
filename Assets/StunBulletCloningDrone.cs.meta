@@ -1,9 +1,5 @@
 fileFormatVersion: 2
-<<<<<<< Updated upstream:Assets/PressurePlateScript.cs.meta
-guid: ca43f4dd88ea3514fa6fed9482191fd9
-=======
-guid: bb07d0f8020addd45adfe999e22e5e1a
->>>>>>> Stashed changes:Assets/DroneHealthScript.cs.meta
+guid: 7abe5996854e0694a9ea5a6a8192c6cb
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2

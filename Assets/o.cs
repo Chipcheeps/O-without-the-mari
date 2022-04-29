@@ -16,7 +16,7 @@ public class o : MonoBehaviour
     public Rigidbody2D whatever;
     public float Jumpvalue = 100;
     public bool isgroundedvar;
-    [SerializeField] public LayerMask mask;
+    [SerializeField] LayerMask mask;
 #pragma warning disable CS0108 // Member hides inherited member; missing new keyword
     public BoxCollider2D collider2D;
 #pragma warning restore CS0108 // Member hides inherited member; missing new keyword
@@ -38,6 +38,10 @@ public class o : MonoBehaviour
     public bool GameOver;
     public Vector2 Checkpoint;
     public GameObject Camera;
+    public bool CanBeShot;
+    public LayerMask Walls;
+    [SerializeField] bool IsCrouched;
+    
 
 
 
@@ -49,16 +53,18 @@ public class o : MonoBehaviour
             while (!isgroundedslide())
             {
                 gameObject.transform.position = new Vector3(transform.position.x, transform.position.y - 0.285f, transform.position.z);
-             Debug.Log("Ajust");
+             //Debug.Log("Ajust");
             }
 
             Speedx += -7;
+        //Debug.Log("Wuh?");
             oDirection = Direction.Left;
         
     }
     private void Slideright()
     {
         Speedx += 7;
+        //Debug.Log("Huh?");
         oDirection = Direction.Right;
         gameObject.transform.localScale = new Vector3(1, 0.5f, 1);
         if (!isgroundedslide())
@@ -72,7 +78,9 @@ public class o : MonoBehaviour
         if (!isgroundedslide())
         {
             gameObject.transform.position = new Vector3(transform.position.x, transform.position.y - 0.285f, transform.position.z);
+            
         }
+        IsCrouched = true;
     }
     void Start()
     {
@@ -85,10 +93,13 @@ public class o : MonoBehaviour
         CanDamage = true;
         GameOver = false;
         Checkpoint = transform.position;
+        CanBeShot = true;
+        IsCrouched = false;
     }
     IEnumerator IsStunned()
     {
         Stunned = true;
+        CanBeShot = false;
         whatever.velocity = new Vector2(0, whatever.velocity.y);
         Color oldcolor = gameObject.GetComponent<SpriteRenderer>().color;
         Color newcolor = new Color(1f, 1f, 0f, oldcolor.a);
@@ -104,6 +115,8 @@ public class o : MonoBehaviour
         {
             gameObject.GetComponent<SpriteRenderer>().color = new Color(1f, 1f, 1f, 0.5f);
         }
+        yield return new WaitForSeconds(0.5f);
+        CanBeShot = true;
     }
     public IEnumerator Hurt()
     {
@@ -156,17 +169,15 @@ public class o : MonoBehaviour
         {
             SceneManager.LoadScene(1);
         }
-    }
-    private void OnCollisionEnter2D(Collision2D collision)
-    {
-        if(collision.gameObject.CompareTag("Stun Projectiles"))
+        if (collision.gameObject.CompareTag("Stun Projectiles"))
         {
             if (!Stunned)
             {
-               StartCoroutine(IsStunned());
+                StartCoroutine(IsStunned());
             }
+            Debug.Log("WillStunBulletDelete?");
             Destroy(collision.gameObject);
-           
+
         }
     }
     public void Invuln()
@@ -211,15 +222,23 @@ public class o : MonoBehaviour
         }
         else
         {
-            transform.localScale = new Vector3(1, 1, 1);
+            if (!CheckForCeiling())
+            {
+                transform.localScale = new Vector3(1, 1, 1);
+                IsCrouched = false;
+            }
+            else
+            {
+                Crouch();
+            }
             if (Input.GetKey(KeyCode.D))
             {
-                Speedx += 10;
+                Speedx += (IsCrouched) ? 7 : 10 ;
                 oDirection = Direction.Right;
             }
             else if (Input.GetKey(KeyCode.A))
             {
-                Speedx += -10;
+                Speedx += (IsCrouched) ? -7 : -10;
                 oDirection = Direction.Left;
             }
         }
@@ -271,6 +290,16 @@ public class o : MonoBehaviour
         {
             airdash = true;
         }
+    }
+    public bool CheckForCeiling()
+    {
+        RaycastHit2D Ceiling;
+        Ceiling = Physics2D.BoxCast(gameObject.transform.position, new Vector2(2.5f, 5), 0f, Vector2.up, 1f, Walls);
+        if (Ceiling.collider != null)
+        {
+            return true;
+        }
+        return false;
     }
     private void FixedUpdate()
     {

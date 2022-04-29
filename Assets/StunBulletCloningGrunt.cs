@@ -17,7 +17,7 @@ public class StunBulletCloningGrunt : MonoBehaviour
     void Update()
     {
         //Debug.Log(gameObject.GetComponent<GruntScript>().follow);
-        if (!gameObject.GetComponent<GruntScript>().follow && Time.time - time >= 1f && gameObject.GetComponent<GruntScript>().isInGruntRange && !o.GetComponent<o>().Stunned)
+        if (!gameObject.GetComponent<GruntScript>().follow && Time.time - time >= 1f && gameObject.GetComponent<GruntScript>().isInGruntRange && o.GetComponent<o>().CanBeShot)
         {
            time = Time.time;
            // Debug.Log(gameObject.GetComponent<GruntScript>().follow);
