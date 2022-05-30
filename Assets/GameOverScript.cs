@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,6 +7,7 @@ public class GameOverScript : MonoBehaviour
 {
     public GameObject o;
     public GameObject GameOver;
+    public GameObject DroneGenerator;
     // Start is called before the first frame update
     void Start()
     {
@@ -26,9 +28,28 @@ public class GameOverScript : MonoBehaviour
             {
                 o.GetComponent<o>().Respawn();
                 GameObject[] Enemies = GameObject.FindGameObjectsWithTag("Enemy");
+                Debug.Log(Enemies.Length);
                 foreach (GameObject enemy in Enemies)
                 {
-                    enemy.GetComponent<RespawnScript>().Return();
+                    try
+                    {
+                        Debug.Log(enemy.name + " good");
+                        if (enemy.name.Equals("Drone(Clone)"))
+                        {
+                            Destroy(enemy);
+                            DroneGenerator.GetComponent<Drone_Generator>().DroneCount--;
+                        }
+                        else
+                        {
+                            enemy.GetComponent<RespawnScript>().Return();
+                        }
+                        
+                    }
+                    catch (NullReferenceException e) 
+                    { 
+                     Debug.Log(enemy.name + " null");
+                    }
+
                 }
             }
 
