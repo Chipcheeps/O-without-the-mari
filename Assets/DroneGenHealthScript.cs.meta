@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/DroneGenHealthScript.cs.meta
 guid: 7c38a5619a70e704eb1ad4bd2b4c213b
+========
+guid: 7abe5996854e0694a9ea5a6a8192c6cb
+>>>>>>>> 711fdc25d260f979b803320e1bcc881677601c57:Assets/StunBulletCloningDrone.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2

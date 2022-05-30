@@ -318,6 +318,16 @@ public class o : MonoBehaviour
         }
         return false;
     }
+    public bool CheckForCeiling()
+    {
+        RaycastHit2D Ceiling;
+        Ceiling = Physics2D.BoxCast(gameObject.transform.position, new Vector2(2.5f, 5), 0f, Vector2.up, 1f, Walls);
+        if (Ceiling.collider != null)
+        {
+            return true;
+        }
+        return false;
+    }
     private void FixedUpdate()
     {
     //    if (CanDash)
