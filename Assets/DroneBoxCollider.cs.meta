@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< HEAD:Assets/DroneBoxCollider.cs.meta
 guid: adde2b54bfb11fe4085988b4bcda08a0
+========
+guid: feae86a739cb3e84f9151037899a2fc2
+>>>>>>>> cf7e1610e096ce2ecb4952125ee63f46b89ade40:Assets/Drone_Generator.cs.meta
 MonoImporter:
   externalObjects: {}
   serializedVersion: 2
