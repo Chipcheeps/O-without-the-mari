@@ -8,76 +8,65 @@ public enum GruntDirection
 public class GruntScript : MonoBehaviour
 {
     public GameObject o;
-    public bool follow;
     public LayerMask PlayerLayer;
     public Animator anim;
     public GruntDirection GruntLook;
     public int Health;
+    public int Armour;
     public GameObject GruntSword;
-    public bool isAttacking;
-    public bool isInGruntRange;
+    Collider2D[] hitlist;
+    Collider2D[] hitntlist;
+    bool Aimed;
     // Start is called before the first frame update
     void Start()
     {
-        follow = false;
+        Armour = 1;
         Health = 10;
-        isAttacking = false;
-        isInGruntRange = false;
+        Physics2D.IgnoreCollision(gameObject.GetComponent<Collider2D>(), o.gameObject.GetComponent<Collider2D>());
+        Aimed = false;
     }
 
     // Update is called once per frame
-    void Update()
+    void FixedUpdate()
     {
-        Collider2D[] hitlist = Physics2D.OverlapCircleAll(gameObject.transform.position, 10f, PlayerLayer);
-        foreach (Collider2D enemy in hitlist)
+       hitlist = Physics2D.OverlapCircleAll(gameObject.transform.position, 10f, PlayerLayer);
+       hitntlist = Physics2D.OverlapCircleAll(gameObject.transform.position, 1f, PlayerLayer);
+
+        if (hitntlist.Length > 0)
         {
-            if (hitlist.Length == 1)
-            {
-                o = enemy.gameObject;
-                isInGruntRange = true;
-            }
-        }
-        Collider2D[] hitntlist = Physics2D.OverlapCircleAll(gameObject.transform.position, 1f, PlayerLayer);
-        foreach (Collider2D enemy in hitntlist)
-        {
-            if (hitntlist.Length == 1)
-            {
-                
-            } 
-        }
-        if (o.GetComponent<o>().Stunned)
-        {
-            follow = true;
-            isInGruntRange = false;
-        }
-        else
-        {
-            follow = false;
-        }
-        if (hitlist.Length == 1)
-        {
-            anim.SetBool("IsAttacking", false);
-            isAttacking = false;
-            Looking();
-        }
-        else
-        {
-            anim.SetBool("IsAttacking", false);
-            isAttacking = false;
-        }
-        if (hitntlist.Length == 1 && o.GetComponent<o>().Stunned)
-        {
-            follow = false;
-            anim.SetBool("IsAttacking", true);
+            Debug.Log("runaway");
             transform.position = Vector2.MoveTowards(transform.position, new Vector3(o.transform.position.x, transform.position.y, transform.position.z), -2f * Time.deltaTime);
-            isAttacking = true;
-            Looking();
         }
-        if (o != null && follow)
+        else if (hitlist.Length > 0 && o.GetComponent<o>().Stunned)
         {
             transform.position = Vector2.MoveTowards(transform.position, new Vector3(o.transform.position.x, transform.position.y, transform.position.z), 6.5f * Time.deltaTime);
-
+            Looking();
+            Debug.Log("Follow");
         }
+
+    }
+    private void Update()
+    {
+        if (hitlist != null)
+        {
+            if (hitlist.Length > 0 && 
+            hitntlist.Length == 0 && 
+            !o.GetComponent<o>().Stunned)
+            {
+            anim.SetBool("IsAttacking", false);
+            Looking();
+            }
+            if (hitntlist.Length > 0 && o.GetComponent<o>().Stunned)
+            {
+            anim.SetBool("IsAttacking", true);  
+            Looking();
+            }
+        }
+        if (Input.GetButtonDown("Fire1") && Input.GetKey(KeyCode.LeftShift) && Aimed)
+        {
+            Armour -= 1;
+        }
+        
     }
     public void Looking()
     {
@@ -92,22 +81,40 @@ public class GruntScript : MonoBehaviour
             anim.SetBool("IsRight", true);
         }
     }
-    private void OnCollisionEnter2D(Collision2D collision)
+    private void OnTriggerEnter2D(Collider2D collision)
     {
         if (collision.gameObject.CompareTag("Projectiles"))
         {
-            Health -= 1;
-            if (Health <= 0)
+            if (Armour <= 0)
             {
-                Destroy(gameObject);
-                Destroy(GruntSword);
+                Debug.Log("ow");
+                Health -= 1;
+                if (Health <= 0)
+                {
+                    Destroy(gameObject);
+                    Destroy(GruntSword);
+                }
+            }
+            else
+            {
+                
             }
             
+
         }
-        if (collision.gameObject.CompareTag("Player"))
+        if (collision.gameObject.CompareTag("Crosshair"))
         {
-            Physics2D.IgnoreCollision(gameObject.GetComponent<Collider2D>(), collision.gameObject.GetComponent<Collider2D>());
+            Debug.Log("Shot");
+            Aimed = true;
         }
     }
-    
+    private void OnTriggerExit2D(Collider2D collision)
+    {
+         if (collision.gameObject.CompareTag("Crosshair"))
+         {
+            Debug.Log("Shot");
+            Aimed = false;
+         }
+    }
+
 }

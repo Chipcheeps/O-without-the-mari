@@ -12,6 +12,9 @@ TagManager:
   - Enemy
   - Surface
   - Stage Hazard
+  - Detection Zone
+  - Drone Detection Zone
+  - Crosshair
   layers:
   - Default
   - TransparentFX

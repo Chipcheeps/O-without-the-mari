@@ -6,8 +6,8 @@ using UnityEngine;
 public class Crosshair : MonoBehaviour
 {
     // Start is called before the first frame update
-    public Camera cam;
     public Vector3 direction;
+    public Animator animator;
     void Start()
     {
         gameObject.transform.position = Vector3.zero;
@@ -22,5 +22,9 @@ public class Crosshair : MonoBehaviour
         Vector3 Screenpoint = Camera.main.ScreenToWorldPoint(mouseposition);
         direction = new Vector3(Screenpoint.x, Screenpoint.y, 1f);
         gameObject.transform.position = direction;
+    }
+    public void EndFireAnim()
+    {
+        animator.SetBool("Fire", false);
     }
 }

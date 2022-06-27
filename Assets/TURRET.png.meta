@@ -1,13 +1,5 @@
 fileFormatVersion: 2
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream:Assets/TURRET.png.meta
 guid: 6daaed772b34cad4994d272160de0cbf
-=======
-guid: 8089239bc1c208c42888fd1be4d03d5f
->>>>>>> Stashed changes:Assets/Drone Generator.png.meta
-=======
-guid: 6daaed772b34cad4994d272160de0cbf
->>>>>>> Stashed changes
 TextureImporter:
   internalIDToNameTable: []
   externalObjects: {}
